@@ -86,9 +86,78 @@ Achieving full Turing Completeness
 
 > The bus is used for data transmission among all modules, but it is single-channel; multiple module outputs may cause conflicts, which can corrupt data.
 
+## Instruction Set Design✏️
 
+<details>
+<summary>Control Module Display🕹️</summary>
+  
+<div align="center">
+  <img src="img/console-module.png" width = "500">
+</div>
 
+>Control from left to right in this order:
+>
+>Register A input | Register A out | Register B input | Register B out | ALU Subtraction on or off | 
+>ALU out | Output Register input | Address Register input | Address Register out | Instruction Counter out | 
+>Instruction Counter add 1 | Instruction Counter input | Instruction Register input | Instruction Register out | Stop Time | Address Register input 
 
+</details>
 
+### 16-bit signal code📜
+The control module controls the inputs and outputs of other modules based on 16-bit binary inputs.
+| Full name of the function | Code | 16-bit siganl | Effect |
+|---------------------------|------|---------------|--------|
+|Register A input|AI|1000000000000000|INPUT
+|Register A out|AO|0100000000000000|OUTPUT
+|Register B input|BI|0010000000000000|INPUT
+|Register B out|BO|0001000000000000|OUTPUT
+|ALU Subtraction on or off|SB|0000100000000000|SYSTEM
+|ALU out|ALU|0000010000000000|OUTPUT
+|Output Register input|OT|0000001000000000|INPUT
+|Address Register input|MI|0000000100000000|INPUT/SYSTEM
+|Address Register out|RO|0000000010000000|OUTPUT
+|Instruction Counter out|PCO|0000000001000000|OUTPUT/SYSTEM
+|Instruction Counter add 1|PCE|0000000000100000|SYSTEM
+|Instruction Counter input|PCI|0000000000010000|INPUT/SYSTEM
+|Instruction Register input|II|0000000000001000|INPUT/SYSTEM
+|Instruction Register out|IO|0000000000000100|OUTPUT/SYSTEM
+|Stop Time|HLT|0000000000000010|SYSTEM
+|Address Register input|RI|0000000000000001|INPUT
 
+### Program Counter📄
+The instruction is decoded into 15 separate control signals by the instruction decoder. These signals are generated in parallel within the decoder, using a 16-bit control word divided into segments.
 
+The last 4 bits of the machine code are used to control the first three instructions (this is a mandatory requirement). These instructions manage the increment of the program counter and the transfer of the instruction to the instruction register.
+
+> The design of machine code : XXXX-function attribute  YYY-Program counter
+
+| XXXX0YYY | Code | Signal |
+|----------|------|--------|
+|xxxx0000| POC MI |00000001 01000000|
+|xxxx0001| RO II |00000000 10001000|
+|xxxx0010| PEC |00000000 00100000|
+
+### Machine Code Instruciton
+
+AT28C16 address converted to XXXXYYYY  
+> XXXX represents the function attribute  
+> YYYY represents the address or number
+
+The AT28C16 is addressed with the pattern 000ZXXXX, and the data read from it is used to output the corresponding input/output control signals to the functional modules.
+> Z used for toggling the flag
+> XXXX used for functional address
+
+Since the AT28C16 can only output 8 bits of data, but the control module requires 16 bits, two AT28C16 chips are connected in parallel, with their address inputs connected together.
+> The 16-bit model outputs the first 8 bits and the last 8 bits separately.
+
+| Effect | Code |Address|16-bit siganl|
+|--------|------|-------|-------------|
+|OUT|AO OT|0000|01000010 00000000|
+|LOAD A|IO MI <br> RO AI|0001|00000001 00000100 <br> 10000000 10000000|
+|ADD A|IO MI <br> RO BI <br> ALU AI|0010|00000001 00000100 <br> 00100000 10000000 <br> 10000100 00000000|
+|SUB A|IO MI <br> RO BI <br> ALU AI SB|0011|00000001 00000100 <br> 00100000 10000000 <br> 10011100 00000000|
+|ST A|IO MI <br> AO RI|0100|00000001 00000100 <br> 01000000 00000001|
+|LOAD I|IO AI|0101|10000000 00000100|
+|JMP|PIC IO|0110|00000000 00000100|
+...
+|FRZZ TIME|HLT|1111|00000000 0000010|
