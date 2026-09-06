@@ -14,6 +14,7 @@ To better prepare for second-year university courses, I plan to finish building 
 The 74HC series chips were chosen because they are easier to demonstrate and assemble on breadboards and perfboards. The entire project will not use any external CPU or microcontroller to control its functional modules.
 
 ## Goal🎯🎯🎯
+
 Completing the basic computer design
 
 Achieving full Turing Completeness
@@ -160,4 +161,87 @@ Since the AT28C16 can only output 8 bits of data, but the control module require
 |LOAD I|IO AI|0101|10000000 00000100|
 |JMP|PIC IO|0110|00000000 00000100|
 ...
-|FRZZ TIME|HLT|1111|00000000 0000010|
+|FRZZ TIME|HLT|1111|00000000 00000010|
+
+
+## The Future and the Plan
+(2026)
+<details>
+<summary>August</summary>
+
+- August 15 ~ 20
+  - Research and study background and Principles✅
+    
+- August 22
+  - Think and learn how to use Crumb✅
+  - Learning the pin usage of 74HC173 and 74HC245✅
+    
+- August 23
+  -  Using Crumb to build adders and registers✅
+  > Build using OR, AND and XOR
+  
+- August 24
+  -  First time trying to build an **instruction classifier**✅
+  > **Instruction Classifier** : Used to split the 4-bit input instruction into 15 individual control units
+  
+- August 25 ~ 26
+  - Decided to use the **von Neumann architecture**✅
+  - Build register A and register B✅
+  - Build ALU✅
+    
+- August 27
+  - Building a clock✅
+  > Require implementation of manual and automatic switching
+  
+- August 28
+  - Build the output register✅
+  - Build the instruction register and instruction memory✅
+    
+- August 29
+  - Implementing the program counter and instruction counter✅
+    
+- August 30
+  - Build the control module✅
+  - Design machine code✅
+    
+- August 31
+  - Design a hexadecimal decoder and create a programming module✅
+  - Creating the flag register✅
+    
+</details>
+
+<details>
+<summary>September</summary>
+  
+- September 1
+  - Purchase 74HC chips and various auxiliary materials✅
+    
+- September 4~6
+  - Upload to GitHub and edit the README🛠️
+
+</details>
+
+<details>
+<summary>Next Step🔧</summary>
+  
+- Design the position of the chip on the perfboard🔬
+
+- Soldering the circuit⛏️
+
+- Edit test program
+
+- Test run
+
+</details>
+
+<details>
+<summary>Future Plan</summary>
+
+- Extend the decoder's control module to support 16-bit to 24-bit content.
+- Increase the memory module, expanding the 15-row memory to 31 rows memory
+
+</details>
+
+
+
+
